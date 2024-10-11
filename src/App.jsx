@@ -5,14 +5,14 @@ import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEven
 
 function App() {
 
-  const position = { lat: 53.54, lng: 10 };
+  // const position = { lat: 53.54, lng: 10 };
 
   return (
     <APIProvider apiKey={"AIzaSyBDpGQlSlqW_QFEdELXCo9KAtVoNSxSgT8"} onLoad={() => console.log('Maps API has loaded.')}>
       <div style={{ height: "100vh" }}>
         <Map 
           zoom={9} 
-          center={position}
+          // center={position}
         >
 
         </Map>
