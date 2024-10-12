@@ -3,6 +3,7 @@
 import React from "react";
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEvent } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./components/PoiMarkers.jsx"
+import MarkerWithInfo from "./components/MarkerWithInfo.jsx";
 
 function App() {
 
@@ -36,11 +37,13 @@ function App() {
       <h1><center>Natural Disaster GIFs</center></h1>
       <div style={{ height: "90vh" }}>
         <Map 
-          defaultZoom={9} 
-          defaultCenter = { {lat : -33.860664, lng: 151.208138}}
+          defaultZoom={2} 
+          defaultCenter = { {lat : 0, lng: 0}}
           mapId="4c59bfd5b8bf65d6"
+
         >
           <PoiMarkers />
+          {/* <MarkerWithInfo /> */}
         </Map>
       </div>
     </APIProvider>

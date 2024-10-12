@@ -1,7 +1,7 @@
 import React from "react";
-import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import * as actions from '../actions/actions';
 
 
@@ -9,10 +9,11 @@ import * as actions from '../actions/actions';
 // const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
 const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
-  
+  const locations = useSelector(store => store.maps.locations)
+  const selectedMarker = useSelector(store => store.maps.selectedMarker);
   const dispatch = useDispatch();
-  let locations = [];
-  const [currLocation, setLocation] = useState(locations);
+  // let locations = [];
+  // const [currLocation, setLocation] = useState(locations);
 
   // const locations = [ // for later, it will be database.body
   //     {key: 'operaHouse', type: 'wildfire', location: { lat: -33.8567844, lng: 151.213108  }},
@@ -50,8 +51,8 @@ const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
     async function mapStuff(){
       const rawData = await fetchInfo();
       console.log('rawData effect:',rawData);
-      const newLocations = rawData.map((el) =>{
-        return {key: el._id, title: el.title, type: el.categories[0].title.toLowerCase() , location: {lat: el.geometries[0].coordinates[1] , lng: el.geometries[0].coordinates[0] }}
+      const newLocations = rawData.map((el,i) =>{
+        return {key: el._id, title: el.title, type: el.categories[0].title.toLowerCase(), link: el.sources[0].url, location: {lat: el.geometries[0].coordinates[1] , lng: el.geometries[0].coordinates[0]}}
     })
     //setLocation(newLocations);
     console.log(newLocations);
@@ -65,10 +66,24 @@ const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
     // const locations = [];
   }, [])
 
+  // const [markerRef, marker] = useAdvancedMarkerRef();
+
+  // const [infoWindowShown, setInfoWindowShown] = useState(false);
+
+  // // clicking the marker will toggle the infowindow
+  // const handleMarkerClick = useCallback(
+  //   () => setInfoWindowShown(isShown => !isShown),
+  //   []
+  // );
+
+  // // if the maps api closes the infowindow, we have to synchronize our state
+  // const handleClose = useCallback(() => setInfoWindowShown(false), []);
+  
+
   return (
     <div>
         
-      {currLocation.map( (poi) => {
+      {locations.map( (poi) => {
         let img = '';
         switch(poi.type){
           case 'wildfires':
@@ -85,10 +100,27 @@ const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
             break;
         }
         return(
-          <AdvancedMarker key={poi.key} position={poi.location}>
+        <>
+          <AdvancedMarker key={poi.key} position={poi.location} onClick={() => {
+            dispatch(actions.setMarkerCreator(poi.key))
+            // console.log("etarget",e);
+            console.log(poi.key);
+            
+          }}>
           <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'}/>
           {/* <img src ={img} width={32} height={32}/> */}
           </AdvancedMarker>
+
+          {poi.key === selectedMarker && (
+            <InfoWindow position={poi.location} onClose={() => {dispatch(actions.setMarkerCreator(''))}} shouldFocus={true}>
+              <h2>{poi.title}</h2>
+              <p>{poi.type}</p>
+              <a href={poi.link}>{poi.link}</a>
+            </InfoWindow>
+          )}
+          
+        </>
+          
         )
       }
         
