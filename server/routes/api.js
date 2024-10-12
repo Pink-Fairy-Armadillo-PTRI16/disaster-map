@@ -1,6 +1,6 @@
 const express = require('express');
 const disasterControl = require('../controllers/disasterControllers');
-
+// const weatherController = require('../controllers/weatherControllers')
 const router = express.Router();
 
 router.get('/', (req,res) =>{
@@ -22,5 +22,10 @@ router.get('/mongo', disasterControl.getData, (req,res)=>{
     console.log('response from get mongo in api router');
     res.status(200).json(res.locals.events);
 })
+
+// router.get('/weather', weatherController.getRelatedSevereWeatherEvents, (req, res)=>{
+//     console.log('response from get mongo in api router');
+//     res.status(200).json(res.locals.events);
+// })
 
 module.exports = router;
