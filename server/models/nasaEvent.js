@@ -22,4 +22,4 @@ const nasaEvent = new mongoose.Schema({
     closed: {type: Date, required: false}
 })
 
-export default nasaEvent;
+module.exports = mongoose.model('nasaEvent', nasaEvent);

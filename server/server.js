@@ -7,8 +7,20 @@ const app = express();
 const PORT = 3000;
 const requestAPI = require('./routes/api.js');
 
+const cors=require("cors");
+const corsOptions ={
+   origin:'*', 
+   credentials:true,            //access-control-allow-credentials:true
+   optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions))
+
 // handlidng parse body
 app.use(express.json());
+
+// use it before all route definitions
+//app.use(cors({origin: 'http://localhost:8000'}));
 
 // handling static file path
 app.use('/', express.static(path.resolve(__dirname, './build')))

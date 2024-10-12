@@ -1,12 +1,10 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
+
+
 
 const connectMongo = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_CONNECTION_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect("mongodb+srv://pinkfairyarmadillos:pinkfairyarmadillos%21%40@disaster-map-scratch-pr.ugf9z.mongodb.net/?retryWrites=true&w=majority&appName=disaster-map-scratch-project");
     console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);

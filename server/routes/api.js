@@ -1,5 +1,5 @@
 const express = require('express');
-import disasterControl from '../controllers/disasterControllers';
+const disasterControl = require('../controllers/disasterControllers');
 
 const router = express.Router();
 
@@ -15,7 +15,12 @@ router.get('/nasa', disasterControl.getNASA,  (req,res)=>{
                 //catagories.title, 
                 //geometries is an array of objects, iterate through geometries to find:
                     //geometries[i].coordinates
-    res.status(200).json({});
+    res.status(200).json(res.locals.events);
+})
+
+router.get('/mongo', disasterControl.getData, (req,res)=>{
+    console.log('response from get mongo in api router');
+    res.status(200).json(res.locals.events);
 })
 
 module.exports = router;

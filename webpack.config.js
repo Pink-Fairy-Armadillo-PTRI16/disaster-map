@@ -23,13 +23,13 @@ module.exports = {
         },
         open: true,
         compress: true,
-        /* proxy: [
-            {
-                context: ['/'],
-                target: 'http://localhost:3000',
-                changeOrigin: true,
-            },
-        ] */
+        // proxy: [
+        //     {
+        //         context: ['/'],
+        //         target: 'http://localhost:3000',
+        //         changeOrigin: true,
+        //     },
+        // ]
     },
 
 
