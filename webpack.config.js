@@ -12,7 +12,7 @@ module.exports = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            template: "src/index.html"
+            template: "/src/index.html"
         }),
     ],
 
@@ -23,13 +23,13 @@ module.exports = {
         },
         open: true,
         compress: true,
-        /* proxy: [
-            {
-                context: ['/'],
-                target: 'http://localhost:3000',
-                changeOrigin: true,
-            },
-        ] */
+        // proxy: [
+        //     {
+        //         context: ['/'],
+        //         target: 'http://localhost:3000',
+        //         changeOrigin: true,
+        //     },
+        // ]
     },
 
 
@@ -47,7 +47,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.s[ac]ss$/i,
+                test: /\.scss$/i,
                 use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
