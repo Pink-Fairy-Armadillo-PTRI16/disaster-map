@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEvent } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./components/PoiMarkers.jsx"
+import LoginModal from "./components/LoginModal.jsx";
 import MarkerWithInfo from "./components/MarkerWithInfo.jsx";
 import { MdDarkMode } from "react-icons/md";
 import { MdOutlineDarkMode } from "react-icons/md";
@@ -11,6 +12,7 @@ import './style.scss';
 import * as actions from '../src/actions/actions';
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   
   const limit = useSelector(store => store.maps.limit);
@@ -91,10 +93,12 @@ function App() {
           </div>
     <div>
       <ul>
-        <li>Submit</li>
-        <li>Red Cross</li>
-        <button>Login</button>
-      </ul>
+        <li><Link to="/submit">Submit</Link></li>
+        <li><Link to="/redcross">Red Cross</Link></li>
+        <div>
+      <LoginModal/>
+    </div>
+          </ul>
     </div>
         
           
