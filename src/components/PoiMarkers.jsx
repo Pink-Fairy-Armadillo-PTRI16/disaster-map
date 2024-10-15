@@ -11,6 +11,8 @@ import * as actions from '../actions/actions';
 const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
   const locations = useSelector(store => store.maps.locations)
   const selectedMarker = useSelector(store => store.maps.selectedMarker);
+  const limit = useSelector(store => store.maps.limit);
+  const filters = useSelector(store => store.maps.filters);
   const dispatch = useDispatch();
   // let locations = [];
   // const [currLocation, setLocation] = useState(locations);
@@ -35,7 +37,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
 
     const fetchInfo = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/mongo');
+        const response = await fetch(`http://localhost:3000/api/mongo?limit=${limit}&filters=${filters}`);
         const data = await response.json();
         //console.log(data);
         return data;
@@ -50,21 +52,28 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
 
     async function mapStuff(){
       const rawData = await fetchInfo();
-      console.log('rawData effect:',rawData);
+      console.log('rawData useEffect:', rawData);
       const newLocations = rawData.map((el,i) =>{
-        return {key: el._id, title: el.title, type: el.categories[0].title.toLowerCase(), link: el.sources[0].url, location: {lat: el.geometries[0].coordinates[1] , lng: el.geometries[0].coordinates[0]}}
+        return {
+          key: el._id, 
+          title: el.title, 
+          date: el.geometries[0].date.substring(0,10), 
+          type: el.categories[0].title.toLowerCase(), 
+          link: el.sources[0].url, 
+          location: {lat: el.geometries[0].coordinates[1] , lng: el.geometries[0].coordinates[0]}
+        }
     })
     //setLocation(newLocations);
     console.log(newLocations);
-    dispatch(actions.setLocationsCreator(newLocations))
+    dispatch(actions.setLocationsActionCreator(newLocations))
     }
     mapStuff();
     //rawData is parsed into a new locations array
-    //new locations array is dispatched to reducer
+    //new locations array is dispatched to reduce
     //state is reset and app is refreshed
 
     // const locations = [];
-  }, [])
+  }, [limit, filters])
 
   // const [markerRef, marker] = useAdvancedMarkerRef();
 
@@ -84,38 +93,75 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
     <div>
         
       {locations.map( (poi) => {
-        let img = '';
+        let image = '';
+        let color = '';
         switch(poi.type){
           case 'wildfires':
-            img = "https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif";
+            image = "https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif";
+            color = 'red';
             break;
           case 'earthquake':
-            img = "https://media.tenor.com/bt1f0dpRBq4AAAAM/toad-kinopio.gif"
+            image = "https://media.tenor.com/bt1f0dpRBq4AAAAM/toad-kinopio.gif";
+            color = 'brown';
             break;
           case 'severe storms':
-            img = "https://media.tenor.com/bt1f0dpRBq4AAAAM/toad-kinopio.gif"
+            image = "https://media.tenor.com/bt1f0dpRBq4AAAAM/toad-kinopio.gif"
+            color = 'lightblue';
             break;
-          default:
+          case 'floods':
+            color = 'blue';
+            break;
+          case 'volcanoes':
+            image = "https://cdn.pixabay.com/photo/2024/01/15/17/41/ai-generated-8510610_640.jpg"
+            color = 'yellow';
+            break;  
+          case 'sea and lake ice':
+            color = 'purple';
+            break;
+          case 'drought':
+            color = 'lightyellow';
+            break;
+          case 'dust and haze':
+            color = 'gray';
+            break;
+          case 'landslides':
+            color ='lightbrown';
+            break;
+          case 'manmade':
+            color='darkgray';
+            break;
+          case 'snow':
+            color='white';
+            break;
+          case 'water color':
+            color='pink';
+            break;
+          case 'temperature extremes':
+            color='teal';
+            break;
+            default:
             // 
             break;
         }
         return(
         <>
           <AdvancedMarker key={poi.key} position={poi.location} onClick={() => {
-            dispatch(actions.setMarkerCreator(poi.key))
+            dispatch(actions.setMarkerActionCreator(poi.key))
             // console.log("etarget",e);
             console.log(poi.key);
             
           }}>
-          <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'}/>
+          <Pin background={color} glyphColor={'#000'} borderColor={'#000'}/>
           {/* <img src ={img} width={32} height={32}/> */}
           </AdvancedMarker>
 
           {poi.key === selectedMarker && (
-            <InfoWindow position={poi.location} onClose={() => {dispatch(actions.setMarkerCreator(''))}} shouldFocus={true}>
+            <InfoWindow position={poi.location} onClose={() => {dispatch(actions.setMarkerActionCreator(''))}} shouldFocus={true}>
               <h2>{poi.title}</h2>
+              <h4>{poi.date}</h4>
               <p>{poi.type}</p>
               <a href={poi.link}>{poi.link}</a>
+              <img src={image} />
             </InfoWindow>
           )}
           
