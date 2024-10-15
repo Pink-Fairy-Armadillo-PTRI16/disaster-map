@@ -1,4 +1,4 @@
-const nasaEvent = require('/Users/lionarmor/disaster-map/server/models/nasaEvent.js');
+const nasaEvent = require('../models/nasaEvent.js');
 
 const disasterControl = {};
 
@@ -34,7 +34,25 @@ disasterControl.getNASA = async (req,res,next) =>{
 
 disasterControl.getData = async (req,res, next)=>{
     console.log('message from disasterControl.getData');
-    res.locals.events = await nasaEvent.find({}).limit(100);
+    console.log('filtersFromFrontEnd:', req.query.filters);
+    const filters = req.query.filters ? req.query.filters.split(',') : [];
+    console.log('SPLIT FILTERS',filters)
+    // res.locals.events = await nasaEvent.find({}).limit(Number(req.query.limit));
+    res.locals.events = await nasaEvent.find({
+        "categories" : {
+            $elemMatch : {
+                "title" : { $in : filters }
+            }
+        }
+    }).limit(Number(req.query.limit));
+    return next()
+}
+
+disasterControl.getParameterizedData = async (req, res, next)=>{
+    console.log('message from disasterControl.getParameterizedData');
+    // const { categories } = req.params.filters;
+    res.locals.events = await nasaEvent.find({"categories": [{ $in : req.params.filters }]
+    }).limit(req.params.limit);
     return next()
 }
 
