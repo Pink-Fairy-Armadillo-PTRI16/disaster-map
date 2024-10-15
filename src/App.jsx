@@ -1,12 +1,26 @@
 // "use client";
 
-import React from "react";
+import React, {useState} from "react";
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEvent } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./components/PoiMarkers.jsx"
 import MarkerWithInfo from "./components/MarkerWithInfo.jsx";
+import { MdDarkMode } from "react-icons/md";
+import { MdOutlineDarkMode } from "react-icons/md";
+import './style.css';
 
 function App() {
 
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  const toggleDarkMode = ()=> {
+    setIsDarkMode(!isDarkMode);
+
+    if (isDarkMode) {
+      document.body.classList.remove('dark-mode');
+    } else {
+      document.body.classList.add('dark-mode');
+    }
+  }
   // const position = { lat: 53.54, lng: 10 };
 
 // const Poi ={ key: string, location: google.maps.LatLngLiteral }
@@ -34,10 +48,11 @@ function App() {
        <Route exact path="/donation" element={<DonationPage/>} />
        </Routes> */}
     <APIProvider apiKey={"AIzaSyBDpGQlSlqW_QFEdELXCo9KAtVoNSxSgT8"} onLoad={() => console.log('Maps API has loaded.')}>
-      <h1><center>Natural Disaster GIFs</center></h1>
+      <div><h1><center>Natural Disaster GIFs</center></h1></div>
+      <div className="darkmode-toggle"><button id = 'btn' onClick={toggleDarkMode}>{isDarkMode ? <MdOutlineDarkMode /> :<MdDarkMode />     }</button></div>
       <div style={{ height: "90vh" }}>
         <Map 
-          defaultZoom={2} 
+          defaultZoom={3} 
           defaultCenter = { {lat : 0, lng: 0}}
           mapId="4c59bfd5b8bf65d6"
 

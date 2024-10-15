@@ -8,7 +8,7 @@ import * as actions from '../actions/actions';
 
 // const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
+const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
   const locations = useSelector(store => store.maps.locations)
   const selectedMarker = useSelector(store => store.maps.selectedMarker);
   const dispatch = useDispatch();

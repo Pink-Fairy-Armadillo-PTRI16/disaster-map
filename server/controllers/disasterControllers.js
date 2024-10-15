@@ -1,4 +1,4 @@
-const nasaEvent = require('/Users/lionarmor/disaster-map/server/models/nasaEvent.js');
+const nasaEvent = require('../models/nasaEvent');
 
 const disasterControl = {};
 
