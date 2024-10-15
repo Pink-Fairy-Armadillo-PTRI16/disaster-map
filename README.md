@@ -8,5 +8,5 @@
 |4. What are the tough technical challenges involved with solving this problem?|Getting all the api’s together, if they exist Filter by type and visual understanding|
 |5. What are the stretch goals?|Search city, Filter features, Breaking news about disaster, History of location and natural disaster, Link to donations(gofundme), Connect with local news station, Alert based on location/sightings|
 |6. What is the technology stack?| govAPIs/sql/mongo/geoAPIs/react/redux/express|
-|Team Responsibility breakdown: Who’s working on which part?|Frontend: Carolina,Jun <br> Backend: Brendan,Sung,Harris|
+|Team Responsibility breakdown: Who’s working on which part?|Frontend: Carolina,Jun,Sung <br> Backend: Brendan,Harris|
 
