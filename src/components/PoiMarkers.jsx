@@ -62,8 +62,9 @@ const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
   useEffect(() => {
 
     async function mapStuff(){
-      let apiCalls = 2;
+      let apiCalls = 0;
       const rawData = await fetchInfo();
+      apiCalls++;
       console.log('rawData useEffect:', rawData);
       const newLocations = rawData.map((el,i) =>{
         return {
@@ -78,6 +79,7 @@ const PoiMarkers = (props/*:{pois: Poi[]}*/) => {
       //QUAKE DATA
       let quakeData;
       filters.includes('Earthquakes') ? quakeData = await fetchQuake() : quakeData = [];
+      if(quakeData.length) apiCalls++;
       console.log('quakeData useEffect:', quakeData);
       const newQuakeLocations = quakeData.map((el) =>{
         return {
