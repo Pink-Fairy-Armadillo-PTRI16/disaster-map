@@ -23,6 +23,16 @@ router.get('/mongo', disasterControl.getData, (req,res)=>{
     res.status(200).json(res.locals.events);
 })
 
+router.get('/quake', disasterControl.getQuake, (req, res) =>{
+    console.log('response from get quake in api router');
+    res.status(200).json(res.locals.events);
+})
+
+router.get('/mongo/quake', disasterControl.getQuakeData, (req,res)=>{
+    console.log('response from get mongo/quake in api router');
+    res.status(200).json(res.locals.events);
+})
+
 // router.get('/weather', weatherController.getRelatedSevereWeatherEvents, (req, res)=>{
 //     console.log('response from get mongo in api router');
 //     res.status(200).json(res.locals.events);

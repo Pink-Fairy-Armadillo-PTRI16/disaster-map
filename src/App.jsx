@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEvent } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./components/PoiMarkers.jsx"
 import MarkerWithInfo from "./components/MarkerWithInfo.jsx";
+import LoginModal from "./components/LoginModal.jsx";
 import { MdDarkMode } from "react-icons/md";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { Link } from 'react-router-dom';
@@ -71,9 +72,9 @@ function App() {
       <div className="darkmode-toggle"><button id = 'btn' onClick={toggleDarkMode}>{isDarkMode ? <MdOutlineDarkMode /> :<MdDarkMode />     }</button></div>
         <div className="filter-btn">
           <input type="text" placeholder="limit" value={getLimit} onChange={(e) =>  setLimit(e.target.value)}/>
-          <button id='limit-btn'onClick={setLimitStore}>LimitMap</button>
+          <button id='limit-btn'onClick={setLimitStore}><b>LimitMap</b></button>
           <div>
-          Filters
+          <h3><b>Filters</b></h3>
           <button id="wf-btn" onClick={handleFilterChange}>Wildfires</button>
           <button id="eq-btn" onClick={handleFilterChange}>Earthquakes</button>
           <button id="storm-btn" onClick={handleFilterChange}>Severe Storms</button>
@@ -91,9 +92,11 @@ function App() {
           </div>
     <div>
       <ul>
-        <li>Submit</li>
-        <li>Red Cross</li>
-        <button>Login</button>
+        <li><Link to='/submit'>Submit</Link></li>
+        <li><Link to='/gethelp'>Get Help</Link></li>
+       <div>
+        <LoginModal/>
+        </div>
       </ul>
     </div>
         
