@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEvent } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./components/PoiMarkers.jsx"
 import MarkerWithInfo from "./components/MarkerWithInfo.jsx";
-import LoginModal from "./components/LoginModal.jsx";
 import { MdDarkMode } from "react-icons/md";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import './style.scss';
 import * as actions from '../src/actions/actions';
+import Header from './components/Header.jsx'
 
 function App() {
 
@@ -68,12 +68,15 @@ function App() {
        <Route exact path="/donation" element={<DonationPage/>} />
        </Routes> */}
     <APIProvider apiKey={"AIzaSyBDpGQlSlqW_QFEdELXCo9KAtVoNSxSgT8"} onLoad={() => console.log('Maps API has loaded.')}>
+      <div>
+        {<Header />}
+      </div>
       <h1><center>We didn't start the fire</center></h1>
-      <div className="darkmode-toggle"><button id = 'btn' onClick={toggleDarkMode}>{isDarkMode ? <MdOutlineDarkMode /> :<MdDarkMode />     }</button></div>
+      {/* <div className="darkmode-toggle"><button id = 'btn' onClick={toggleDarkMode}>{isDarkMode ? <MdOutlineDarkMode /> :<MdDarkMode />     }</button></div> */}
         <div className="filter-btn">
           <input type="text" placeholder="limit" value={getLimit} onChange={(e) =>  setLimit(e.target.value)}/>
           <button id='limit-btn'onClick={setLimitStore}><b>LimitMap</b></button>
-          <div>
+          
           <h3><b>Filters</b></h3>
           <button id="wf-btn" onClick={handleFilterChange}>Wildfires</button>
           <button id="eq-btn" onClick={handleFilterChange}>Earthquakes</button>
@@ -89,16 +92,7 @@ function App() {
           <button id="water-btn" onClick={handleFilterChange}>Water Color</button>
           <button id="temp-btn" onClick={handleFilterChange}>Temperature Extremes</button>
           {/* <button onClick={testFilter}>Test filter</button> */}
-          </div>
-    <div>
-      <ul>
-        <li><Link to='/submit'>Submit</Link></li>
-        <li><Link to='/gethelp'>Get Help</Link></li>
-       <div>
-        <LoginModal/>
-        </div>
-      </ul>
-    </div>
+          
         
           
         </div>
