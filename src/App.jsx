@@ -13,7 +13,15 @@ import Header from './components/Header.jsx'
 
 function App() {
 
-  
+  const pageTitles = [
+    'We didn\'t start the fire', 
+    'Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock',
+    'Global warming is reaalll',
+    'Disaster Map',
+    'Disaster Master',
+  ]
+  const title = pageTitles[Math.ceil(Math.random() * pageTitles.length-1)]
+
   const limit = useSelector(store => store.maps.limit);
   const filters = useSelector(store => store.maps.filters);
   const dispatch = useDispatch();
@@ -65,13 +73,13 @@ function App() {
   return (
     <div>
        {/* <Routes>
-       <Route exact path="/donation" element={<DonationPage/>} />
+       <Route exact path="/gethelp" element={<HelpPage/>} />
        </Routes> */}
     <APIProvider apiKey={"AIzaSyBDpGQlSlqW_QFEdELXCo9KAtVoNSxSgT8"} onLoad={() => console.log('Maps API has loaded.')}>
       <div>
         {<Header />}
       </div>
-      <h1><center>We didn't start the fire</center></h1>
+      <h1><center>{title}</center></h1>
       {/* <div className="darkmode-toggle"><button id = 'btn' onClick={toggleDarkMode}>{isDarkMode ? <MdOutlineDarkMode /> :<MdDarkMode />     }</button></div> */}
         <div className="filter-btn">
           <input type="text" placeholder="limit" value={getLimit} onChange={(e) =>  setLimit(e.target.value)}/>
