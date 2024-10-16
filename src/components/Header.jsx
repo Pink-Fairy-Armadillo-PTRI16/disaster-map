@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import LoginModal from "./LoginModal.jsx";
 
 const Header = () => {
@@ -7,9 +7,10 @@ const Header = () => {
     return (
         <div className='navBar'>
         <ul id='nav'>
-            <li><Link to='/submit'>Submit</Link></li>
-            <li><Link to='/gethelp'>Get Help</Link></li>
-            <li><LoginModal /></li>
+            <button><Link to='/submit' className='submit-btn'>Submit</Link></button>
+            <button><Link to='/gethelp' path='/getgelp' className='get-help-btn'>Get Help</Link></button>
+            
+            <LoginModal />
         </ul>
         </div>
     )
