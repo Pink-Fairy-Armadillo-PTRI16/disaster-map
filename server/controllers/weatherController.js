@@ -2,34 +2,72 @@ const fetch = require('node-fetch');
 
 const weatherController = {};
 
-weatherController.getRelatedSevereWeatherEvents = async (req, res, next) => {
+weatherController.getRelatedWeatherForNasaEvent = async (req, res, next) => {
+  try {
+    const apiKey = 'cfc083dfcb9e4a8a9a002913241710';
     const events = res.locals.events;
-    const apiKey = '98c5d6565534c818b60515fba1cba44d';
 
-    try {
-        for (const event of events) {
-            // Get the first geometry (assuming it's the most relevant)
-            const geometry = event.geometries[0];
-            console.log("GEOMETRY", geometry)
-            const [lon, lat] = geometry.coordinates;
-            console.log("LON", lon)
-            console.log("LAT", lat)
-            const timestamp = Math.floor(new Date(geometry.date).getTime() / 1000);
-            console.log("TIMESTAMP", timestamp)
-            const url = `https://api.openweathermap.org/data/3.0/onecall/timemachine?appid=${apiKey}&lat=${lat}&lon=${lon}&dt=${timestamp}`;
+    const requests = events.map(event => {
+      const geometry = event.geometries[0];
+      const [lon, lat] = geometry.coordinates;
+      const date = geometry.date.toISOString().split('T')[0];
+      console.log("DATE", date)
+      console.log("LAT", lat, "LON", lon)
+      return {
+        q : `${lat},${lon}`,
+        dt : date
+      };
+    });
 
-            const response = await fetch(url);
-            const weatherData = await response.json();
-            console.log("WEATHERDATA", weatherData)
-            // Add weather data to the event
-            event.weatherData = weatherData;
+    const batchProcess = async (batch, index) => {
+      try {
+        const response = await fetch(`https://api.weatherapi.com/v1/history.json?q=${batch.q}&key=${apiKey}&dt=${batch.dt}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const weatherData = await response.json();
+        if (weatherData.error) {
+          console.error(`Weather API error for index ${index}:`, weatherData.error);
+          return { error: weatherData.error, index };
         }
-
-        next();
-    } catch (error) {
-        console.error('Error fetching weather data:', error);
-        return res.status(500).json({ error: 'Failed to fetch weather data' });
+        return { weatherData, index };
+      } catch (error) {
+        console.error(`Error fetching weather data for index ${index}:`, error);
+        return { error, index };
+      }
     }
+
+    const weatherDataBatches = await Promise.all(requests.map((request, index) => batchProcess(request, index)));
+
+    res.locals.eventsWithWeather = events.map((event, index) => {
+      const matchingWeatherData = weatherDataBatches.find(batch => batch.index === index);
+      
+      if (matchingWeatherData.error) {
+        console.warn(`Skipping weather data for event at index ${index} due to error`);
+        return { nasaEvent: event.toObject(), relevantWeather: null} // Return the event without weather data
+      }
+
+      const eventWeather = matchingWeatherData.weatherData;
+      
+      // Extract the correct data from the API response
+      const dayData = eventWeather.forecast.forecastday[0];
+      const location = eventWeather.location;
+      return {
+        nasaEvent: event.toObject(),
+        relevantWeather: { forecast: dayData, location: location }
+      };
+    });
+
+    next();
+  } catch (error) {
+    next({
+      log: 'Error in weatherController.getRelatedSevereWeatherEvents',
+      status: 500,
+      message: { err: 'An error occurred while fetching weather data' },
+    });
+  }
 };
 
 module.exports = weatherController;

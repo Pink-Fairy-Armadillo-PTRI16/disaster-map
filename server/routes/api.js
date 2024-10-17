@@ -18,9 +18,9 @@ router.get('/nasa', disasterControl.getNASA,  (req,res)=>{
     res.status(200).json(res.locals.events);
 })
 
-router.get('/mongo', disasterControl.getData, weatherController.getRelatedSevereWeatherEvents, (req,res)=>{
+router.get('/mongo', disasterControl.getData, weatherController.getRelatedWeatherForNasaEvent, (req,res)=>{
     console.log('response from get mongo in api router');
-    res.status(200).json(res.locals.events);
+    res.status(200).json(res.locals.eventsWithWeather);
 })
 
 // router.get('/weather', weatherController.getRelatedSevereWeatherEvents, (req, res)=>{
