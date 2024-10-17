@@ -46,7 +46,7 @@ function LoginModal(){
 
     return (
         <div>
-            <button onClick={()=> setIsOpen(true)}>Login</button>
+            <button className='header-btn' onClick={()=> setIsOpen(true)}>Login</button>
 
             {isOpen && (
                 <div className='modal'>

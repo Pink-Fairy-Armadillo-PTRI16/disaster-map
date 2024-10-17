@@ -1,123 +1,48 @@
-// "use client";
 import React, { useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, MapCameraChangedEvent } from "@vis.gl/react-google-maps";
-import PoiMarkers from "./components/PoiMarkers.jsx"
-import MarkerWithInfo from "./components/MarkerWithInfo.jsx";
-import { MdDarkMode } from "react-icons/md";
-import { MdOutlineDarkMode } from "react-icons/md";
-import { Link } from 'react-router-dom';
-import './style.scss';
-import * as actions from '../src/actions/actions';
-import Header from './components/Header.jsx'
+import { Routes, Route } from "react-router-dom";
+import "./styles/style.scss";
+import Header from "./components/Header.jsx";
+import HelpPage from "./components/HelpPage.jsx";
+import Filters from "./components/Filters.jsx";
+import WorldMap from "./components/WorldMap.jsx";
 
 function App() {
 
   const pageTitles = [
-    'We didn\'t start the fire', 
-    'Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock',
-    'Global warming is reaalll',
-    'Disaster Map',
-    'Disaster Master',
-  ]
-  const title = pageTitles[Math.ceil(Math.random() * pageTitles.length-1)]
+    "Disaster Map",
+    "We didn't start the fire",
+    "Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock",
+    "Global warming is reaalll",
+    "Disaster Master",
+    "This is fine",
+  ];
 
-  const limit = useSelector(store => store.maps.limit);
-  const filters = useSelector(store => store.maps.filters);
-  const dispatch = useDispatch();
+  const [title, setTitle] = useState(pageTitles[0]);
 
-  const testFilter = () => dispatch(actions.setFilterActionCreator(filters))
-  const [getLimit, setLimit] = useState(limit);
-  const setLimitStore = () => {
-    console.log('limit', getLimit)
-    dispatch(actions.setLimitActionCreator(getLimit));
+  const onFilterChange = () => {
+    const newTitle = pageTitles[Math.ceil(Math.random() * pageTitles.length - 1)];
+    setTitle(newTitle);
   }
-  
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [getFilters, setFilters] = useState({});
-  
-  const toggleDarkMode = ()=> {
-    setIsDarkMode(!isDarkMode);
-
-    if (isDarkMode) {
-      document.body.classList.remove('dark-mode');
-    } else {
-      document.body.classList.add('dark-mode');
-    }
-  }
-
-  // ['wildfires', 
-  //   'earthquake', 
-  //   'severe storms', 
-  //   'floods', 
-  //   'volcanoes', 
-  //   'sea and lake ice', 
-  //   'drought', 
-  //   'dust and haze', 
-  //   'landslides', 
-  //   'manmade', 
-  //   'snow', 
-  //   'water color', 
-  //   'temperature extremes' ],
-
-  const handleFilterChange = (event) => {
-    // console.log('value?', event.target.innerHTML);
-    const filter = event.target.innerHTML;
-    getFilters[filter] ? delete getFilters[filter] : getFilters[filter] = filter;
-    console.log('getFilters', getFilters);
-    setFilters(getFilters);
-    dispatch(actions.setFilterActionCreator(Object.values(getFilters)));
-  }
-
 
   return (
     <div>
-       {/* <Routes>
-       <Route exact path="/gethelp" element={<HelpPage/>} />
-       </Routes> */}
-    <APIProvider apiKey={"AIzaSyBDpGQlSlqW_QFEdELXCo9KAtVoNSxSgT8"} onLoad={() => console.log('Maps API has loaded.')}>
-      <div>
-        {<Header />}
-      </div>
-      <h1><center>{title}</center></h1>
-      {/* <div className="darkmode-toggle"><button id = 'btn' onClick={toggleDarkMode}>{isDarkMode ? <MdOutlineDarkMode /> :<MdDarkMode />     }</button></div> */}
-        <div className="filter-btn">
-          <input type="text" placeholder="limit" value={getLimit} onChange={(e) =>  setLimit(e.target.value)}/>
-          <button id='limit-btn'onClick={setLimitStore}><b>LimitMap</b></button>
-          
-          <h3><b>Filters</b></h3>
-          <button id="wf-btn" onClick={handleFilterChange}>Wildfires</button>
-          <button id="eq-btn" onClick={handleFilterChange}>Earthquakes</button>
-          <button id="storm-btn" onClick={handleFilterChange}>Severe Storms</button>
-          <button id="flood-btn" onClick={handleFilterChange}>Floods</button>
-          <button id="volcanoes-btn" onClick={handleFilterChange}>Volcanoes</button>
-          <button id="ice-btn" onClick={handleFilterChange}>Sea and Lake Ice</button>
-          <button id="drought-btn" onClick={handleFilterChange}>Drought</button>
-          <button id="dust-btn" onClick={handleFilterChange}>Dust and Haze</button>
-          <button id="landslide-btn" onClick={handleFilterChange}>Landslides</button>
-          <button id="manmade-btn" onClick={handleFilterChange}>Manmade</button>
-          <button id="snow-btn" onClick={handleFilterChange}>Snow</button>
-          <button id="water-btn" onClick={handleFilterChange}>Water Color</button>
-          <button id="temp-btn" onClick={handleFilterChange}>Temperature Extremes</button>
-          {/* <button onClick={testFilter}>Test filter</button> */}
-          
-        
-          
-        </div>
-      <div style={{ height: "90vh" }}>
-        <Map 
-          defaultZoom={2}  
-          defaultCenter = { {lat : 0, lng: 0}}
-          mapId="4c59bfd5b8bf65d6"
+      <Header title={title} />
 
-        >
-          <PoiMarkers />
-          {/* <MarkerWithInfo /> */}
-        </Map>
-      </div>
-    </APIProvider>
+      <Routes>
+        <Route path="/gethelp" element={<HelpPage />} />
+        <Route
+          path="/"
+          element={
+            <div>
+              <Filters onFilterChange={onFilterChange}/>
+              <WorldMap />
+            </div>
+          }
+        />
+      </Routes>
+
     </div>
-  )
+  );
 }
 
 export default App;
