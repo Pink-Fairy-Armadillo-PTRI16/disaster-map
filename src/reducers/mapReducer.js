@@ -1,4 +1,16 @@
 import * as types from '../constants/actionTypes';
+import React from 'react';
+
+const pageTitles = [
+  "Disaster Map",
+  "We didn't start the fire",
+  'It was always burning, since the world\'s been turning',
+  "Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock",
+  "Global warming is reaalll",
+  "Disaster Master",
+  "This is fine",
+  <img src="https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif"></img>,
+];
 
 const initialState = {
   locations: [],
@@ -16,8 +28,12 @@ const initialState = {
     'Manmade', 
     'Snow', 
     'Water Color', 
-    'Temperature Extremes' ],
+    'Temperature Extremes' 
+  ],
+  title: 'Disaster Map',
 };
+
+
 
 const mapReducer = (state = initialState, action) => {
 
@@ -50,6 +66,17 @@ const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         filters: action.payload,
+      }
+
+    case types.SET_TITLE:
+      let newTitle = state.title;
+      while(newTitle == action.payload){
+        newTitle = pageTitles[Math.ceil(Math.random() * pageTitles.length - 1)];
+      }
+      // console.log(newTitle);
+      return {
+        ...state,
+        title: newTitle,
       }
 
     default: {
