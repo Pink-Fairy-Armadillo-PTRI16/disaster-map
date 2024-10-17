@@ -5,36 +5,43 @@ import Header from "./components/Header.jsx";
 import HelpPage from "./components/HelpPage.jsx";
 import Filters from "./components/Filters.jsx";
 import WorldMap from "./components/WorldMap.jsx";
+import SubmitPage from "./components/SubmitPage.jsx";
+import Title from "./components/Title.jsx";
+import Links from "./components/Links.jsx";
 
 function App() {
 
-  const pageTitles = [
-    "Disaster Map",
-    "We didn't start the fire",
-    "Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock",
-    "Global warming is reaalll",
-    "Disaster Master",
-    "This is fine",
-  ];
+  // const title = useSelector(store => store.maps.title);
 
-  const [title, setTitle] = useState(pageTitles[0]);
+  // const pageTitles = [
+  //   "Disaster Map",
+  //   "We didn't start the fire",
+  //   "Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock",
+  //   "Global warming is reaalll",
+  //   "Disaster Master",
+  //   "This is fine",
+  // ];
 
-  const onFilterChange = () => {
-    const newTitle = pageTitles[Math.ceil(Math.random() * pageTitles.length - 1)];
-    setTitle(newTitle);
-  }
+  // const [title, setTitle] = useState(pageTitles[0]);
+
+  // const onFilterChange = () => {
+  //   const newTitle = pageTitles[Math.ceil(Math.random() * pageTitles.length - 1)];
+  //   setTitle(newTitle);
+  // }
 
   return (
     <div>
-      <Header title={title} />
-
+      <Header />
       <Routes>
         <Route path="/gethelp" element={<HelpPage />} />
+        <Route path='/submit' element={<SubmitPage/>} />
+        <Route path="/links" element={<Links />} />
         <Route
           path="/"
           element={
             <div>
-              <Filters onFilterChange={onFilterChange}/>
+              <Title />
+              <Filters />
               <WorldMap />
             </div>
           }

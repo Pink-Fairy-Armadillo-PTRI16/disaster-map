@@ -68,7 +68,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
           key: el.id,
           title: el.title,
           date: new Date(Number(el.date)).toISOString().slice(0, 10),
-          type: "earthquake",
+          type: "earthquakes",
           link: el.url,
           location: { lat: el.coordinates[1], lng: el.coordinates[0] },
         };
@@ -94,19 +94,23 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
       {locations.map((poi) => {
         let image = "";
         let color = "";
+        let newClass = "info-window";
         switch (poi.type) {
           case "wildfires":
             image = "https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif";
             color = "red";
+            newClass = "fire-window";
             break;
-          case "earthquake":
+          case "earthquakes":
             image = "https://media.tenor.com/bt1f0dpRBq4AAAAM/toad-kinopio.gif";
             color = "#964B00";
+            newClass = "earth-window";
             break;
           case "severe storms":
             image =
               "https://media1.tenor.com/m/DAFlmuvQi4kAAAAC/wind-windy.gif";
             color = "lightblue";
+            newClass = "storm-window"
             break;
           case "floods":
             image =
@@ -114,14 +118,18 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
             color = "blue";
             break;
           case "volcanoes":
-            image =
-              "https://cdn.pixabay.com/photo/2024/01/15/17/41/ai-generated-8510610_640.jpg";
+            image =[
+              "https://media1.tenor.com/m/QobNiLZH5ZMAAAAC/spongebob-squidward.gif",
+              "https://media1.tenor.com/m/VbSXTPWtxzkAAAAC/i-lava-you-pixar.gif",
+            ];
             color = "yellow";
+            newClass= "volcano-window";
             break;
           case "sea and lake ice":
             image =
               "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWIweTZpeWd6MnV3d3JheTJoeHRpb3FrMm9pbXgzZ2psbGt6cnpmZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/10N782ExqDjCLK/giphy.gif";
             color = "purple";
+            newClass = "ice-window";
             break;
           case "drought":
             image =
@@ -179,6 +187,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
 
             {poi.key === selectedMarker && (
               <InfoWindow
+                className={newClass}
                 position={poi.location}
                 onClose={() => {
                   dispatch(actions.setMarkerActionCreator(""));
@@ -189,7 +198,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                 <h4>{poi.date}</h4>
                 <p>{poi.type}</p>
                 <a href={poi.link}>{poi.link}</a>
-                <img src={image} />
+                <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} />
               </InfoWindow>
             )}
           </>
