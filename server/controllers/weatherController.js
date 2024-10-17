@@ -46,12 +46,11 @@ weatherController.getRelatedWeatherForNasaEvent = async (req, res, next) => {
       
       if (matchingWeatherData.error) {
         console.warn(`Skipping weather data for event at index ${index} due to error`);
-        return { nasaEvent: event.toObject(), relevantWeather: null} // Return the event without weather data
+        return { nasaEvent: event.toObject(), relevantWeather: null}
       }
 
       const eventWeather = matchingWeatherData.weatherData;
       
-      // Extract the correct data from the API response
       const dayData = eventWeather.forecast.forecastday[0];
       const location = eventWeather.location;
       return {
@@ -63,7 +62,7 @@ weatherController.getRelatedWeatherForNasaEvent = async (req, res, next) => {
     next();
   } catch (error) {
     next({
-      log: 'Error in weatherController.getRelatedSevereWeatherEvents',
+      log: 'Error in weatherController.getRelatedWeatherEvents',
       status: 500,
       message: { err: 'An error occurred while fetching weather data' },
     });
