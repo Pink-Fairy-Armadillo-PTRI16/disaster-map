@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import App from './App.jsx';
 import store from './store';
 import { BrowserRouter } from "react-router-dom";
+//import './styles/main.scss'
 
 // console.log("Hello world");
 

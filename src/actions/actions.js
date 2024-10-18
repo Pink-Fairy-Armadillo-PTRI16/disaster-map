@@ -19,3 +19,13 @@ export const setFilterActionCreator = (filter) => ({
   type: types.SET_FILTER,
   payload: filter,
 })
+
+export const setTitleActionCreator = (title) => ({
+  type: types.SET_TITLE,
+  payload: title,
+})
+
+export const setUpdateActionCreator = (update) => ({
+  type: types.SET_UPDATE,
+  payload: update,
+})
