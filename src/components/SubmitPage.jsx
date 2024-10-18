@@ -6,7 +6,7 @@ const SubmitPage = ()=> {
     const [description, SetDescription] = useState('')
 
     return (
-        <div>
+        <div className='submit-container'>
             <h1 className='submitHeader'>Submit Disaster Info</h1><br/>
 
             <form id='submit'>
@@ -14,11 +14,11 @@ const SubmitPage = ()=> {
                 <input type='text' id='firstname' name='firstname' value={firstName} onChange={(e)=>setFirstName(e.target.value)}/><br/>
                 <label for='lastname'>Last Name: </label><br/>
                 <input type='text' id='lastname' name='lastname' value={lastName} onChange={(e)=>setLastName(e.target.value)} /><br/>
-                <label for="country">Country</label><br/>
+                <label for="country">Country:</label><br/>
                 <select id="country" name="country">
+                <option value="usa">USA</option>
                 <option value="australia">Australia</option>
                 <option value="canada">Canada</option>
-                <option value="usa">USA</option>
                 </select><br/>
                 <label for='incident'>Incident Description: </label><br/>
                 <input type='textbox' value={description} onChange={(e)=>SetDescription(e.target.value)}/><br/>

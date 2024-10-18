@@ -24,3 +24,8 @@ export const setTitleActionCreator = (title) => ({
   type: types.SET_TITLE,
   payload: title,
 })
+
+export const setUpdateActionCreator = (update) => ({
+  type: types.SET_UPDATE,
+  payload: update,
+})
