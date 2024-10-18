@@ -37,6 +37,15 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
     }
   };
 
+  const safeStringify = (obj) => {
+    if (obj === null || obj === undefined) return 'N/A';
+    try {
+      return JSON.stringify(obj, null, 2);
+    } catch (error) {
+      return 'Unable to display data';
+    }
+  };
+
   useEffect(() => {
     async function mapStuff() {
       let apiCalls = 0;
@@ -45,15 +54,19 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
       console.log("rawData useEffect:", rawData);
       const newLocations = rawData.map((el, i) => {
         return {
-          key: el._id,
-          title: el.title,
-          date: el.geometries[0].date.substring(0, 10),
-          type: el.categories[0].title.toLowerCase(),
-          link: el.sources[0].url,
+          key: el.nasaEvent._id,
+          title: el.nasaEvent.title,
+          date: el.nasaEvent.geometries[0].date.substring(0, 10),
+          type: el.nasaEvent.categories[0].title.toLowerCase(),
+          link: el.nasaEvent.sources[0].url,
           location: {
-            lat: el.geometries[0].coordinates[1],
-            lng: el.geometries[0].coordinates[0],
+            lat: el.nasaEvent.geometries[0].coordinates[1],
+            lng: el.nasaEvent.geometries[0].coordinates[0],
           },
+          weather: el.relevantWeather ? {
+            location: el.relevantWeather.location || null,
+            forecast: el.relevantWeather.forecast || null,
+          } : null,
         };
       });
       //QUAKE DATA
@@ -173,7 +186,6 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
               position={poi.location}
               onClick={() => {
                 dispatch(actions.setMarkerActionCreator(poi.key));
-                // console.log("etarget",e);
                 console.log(poi.key);
               }}
             >
@@ -182,7 +194,6 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                 glyphColor={"#000"}
                 borderColor={"#000"}
               />
-              {/* <img src ={img} width={32} height={32}/> */}
             </AdvancedMarker>
 
             {poi.key === selectedMarker && (
@@ -194,11 +205,18 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                 }}
                 shouldFocus={true}
               >
-                <h2>{poi.title}</h2>
-                <h4>{poi.date}</h4>
-                <p>{poi.type}</p>
-                <a href={poi.link}>{poi.link}</a>
-                <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} />
+                <div className="info-content">
+                  <h2>{poi.title}</h2>
+                  <h4>{poi.date}</h4>
+                  <p>Event Type: {poi.type}</p>
+                  <a href={poi.link} target="_blank" rel="noopener noreferrer">More Info</a>
+                  <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} alt={poi.type} />
+                  
+                  <div className="weather-info">
+                    <h3>Weather Information</h3>
+                    <pre>{safeStringify(poi.weather)}</pre>
+                  </div>
+                </div>
               </InfoWindow>
             )}
           </>
