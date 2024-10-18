@@ -1,4 +1,5 @@
 const nasaEvent = require('../models/nasaEvent.js');
+const quakeEvent = require('../models/quakeEvent.js');
 
 const disasterControl = {};
 
@@ -53,6 +54,41 @@ disasterControl.getParameterizedData = async (req, res, next)=>{
     // const { categories } = req.params.filters;
     res.locals.events = await nasaEvent.find({"categories": [{ $in : req.params.filters }]
     }).limit(req.params.limit);
+    return next()
+}
+
+disasterControl.getQuake = async (req, res, next)=>{
+    console.log('message from getQuakeData in disasterController');
+    
+    res.locals.events = res.locals.events || [];
+
+    const response = await fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2024-10-14&endtime=2024-10-15');
+    const data = await response.json();
+
+    for (const event of data.features) {
+        const existingEvent = await quakeEvent.findOne({ id: event.id });
+
+        if (!existingEvent) {
+            const newQuake = new quakeEvent({
+                id: event.id,
+                title: event.properties.title,
+                date: event.properties.time,
+                url: event.properties.url,
+                coordinates: event.geometry.coordinates,
+                magnitude: event.properties.mag,
+            })
+            newQuake.save();
+            res.locals.events.push(newQuake);
+        }
+    }
+
+    return next();
+}
+
+disasterControl.getQuakeData = async (req,res, next)=>{
+    console.log('message from disasterControl.getQuakeData');
+    // res.locals.events = await nasaEvent.find({}).limit(Number(req.query.limit));
+    res.locals.events = await quakeEvent.find({}).limit(Number(req.query.limit));
     return next()
 }
 
