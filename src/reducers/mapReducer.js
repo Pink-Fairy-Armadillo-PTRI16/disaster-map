@@ -2,14 +2,15 @@ import * as types from '../constants/actionTypes';
 import React from 'react';
 
 const pageTitles = [
-  "Disaster Map",
+  // "Disaster Map",
+  "a.k.a. Fire Map",
   "We didn't start the fire",
   'It was always burning, since the world\'s been turning',
-  "Hurricane Helene was geoengineered by the government to seize and access lithium deposits in Chimney Rock",
+  "Hurricane Helene was (not) geoengineered by the government to seize and access lithium deposits in Chimney Rock",
   "Global warming is reaalll",
   "Disaster Master",
   "This is fine",
-  <img src="https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif"></img>,
+  <img sizes='(max-width:10px), 10px, 10px' src="https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif"></img>,
 ];
 
 const initialState = {
@@ -30,7 +31,8 @@ const initialState = {
     'Water Color', 
     'Temperature Extremes' 
   ],
-  title: 'Disaster Map',
+  title: '',
+  date: '',
 };
 
 
@@ -77,6 +79,13 @@ const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         title: newTitle,
+      }
+
+    case types.SET_UPDATE:
+
+      return {
+        ...state,
+        date: action.payload,
       }
 
     default: {

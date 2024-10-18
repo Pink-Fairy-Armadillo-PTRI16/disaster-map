@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { AdvancedMarker, Pin, InfoWindow } from "@vis.gl/react-google-maps";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
 import * as actions from "../actions/actions";
 
 // const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
@@ -11,7 +10,10 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
   const selectedMarker = useSelector((store) => store.maps.selectedMarker);
   const limit = useSelector((store) => store.maps.limit);
   const filters = useSelector((store) => store.maps.filters);
+  
   const dispatch = useDispatch();
+  const [weatherIcon, setWeatherIcon] = useState(null);
+
 
   const fetchInfo = async () => {
     try {
@@ -19,7 +21,9 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
         `http://localhost:3000/api/mongo?limit=${limit}&filters=${filters}`
       );
       const data = await response.json();
-      //console.log(data);
+      console.log('data from fetchInfo: ', data);
+      console.log('created at: ', data[0].nasaEvent.createdAt)
+      dispatch(actions.setUpdateActionCreator(data[0].nasaEvent.createdAt))
       return data;
     } catch (error) {
       console.error("Error:", error);
@@ -45,6 +49,12 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
       return 'Unable to display data';
     }
   };
+
+  const renderWeatherIcon = async (cdnLink) => {
+    const response = await fetch(`https:${cdnLink}`);
+    const blob = await response.blob();
+    return setWeatherIcon(URL.createObjectURL(blob));
+  }
 
   useEffect(() => {
     async function mapStuff() {
@@ -102,6 +112,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
     // const locations = [];
   }, [limit, filters]);
 
+  
   return (
     <div>
       {locations.map((poi) => {
@@ -196,7 +207,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
               />
             </AdvancedMarker>
 
-            {poi.key === selectedMarker && (
+            {poi.key === selectedMarker &&  (
               <InfoWindow
                 className={newClass}
                 position={poi.location}
@@ -212,9 +223,27 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                   <a href={poi.link} target="_blank" rel="noopener noreferrer">More Info</a>
                   <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} alt={poi.type} />
                   
+                  
                   <div className="weather-info">
                     <h3>Weather Information</h3>
-                    <pre>{safeStringify(poi.weather)}</pre>
+                    {/* {console.log('weatherInfo', poi.weather)} */}
+                    {poi.type != 'earthquakes' && poi.weather != null
+                    ? <div>
+                        <h3>Region: {poi.weather.location.region}</h3>
+                        <div style={{ justifyContent : 'center' }}>
+                          {/* <p>Overall: {poi.weather.forecast.day.condition.text}</p> */}
+                          {/* <p>{renderWeatherIcon(poi.weather.forecast.day.condition.icon)}</p> */}
+                        </div>
+                        
+                        <p>Chance of Rain:{poi.weather.forecast.day.daily_chance_of_rain} %</p>
+                        <p>High Temp: {poi.weather.forecast.day.maxtemp_f} F</p>
+                        <p>Low Temp: {poi.weather.forecast.day.mintemp_f} F</p>
+                        <p>UV Index: {poi.weather.forecast.day.uv}/11+</p>
+                        <p>Humidity: {poi.weather.forecast.day.avghumidity} g/m^3</p>
+                        <pre>{safeStringify(poi.weather)}</pre>
+                      </div>
+                    : <p>n/a</p>
+                    }
                   </div>
                 </div>
               </InfoWindow>

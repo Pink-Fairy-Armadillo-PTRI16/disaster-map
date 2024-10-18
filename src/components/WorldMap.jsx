@@ -1,8 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./PoiMarkers.jsx";
 
 const WorldMap = () => {
+
+  const date = useSelector((store) => store.maps.date);
 
   return (
     <APIProvider apiKey={"AIzaSyBDpGQlSlqW_QFEdELXCo9KAtVoNSxSgT8"} onLoad={() => console.log('Maps API has loaded.')}>
@@ -14,6 +17,11 @@ const WorldMap = () => {
         >
           <PoiMarkers />
         </Map>
+        <div className="update-date">
+          <p>
+            Database last updated at: {date.slice(0,10)}
+          </p>
+        </div>
       </div>
     </APIProvider>
   )

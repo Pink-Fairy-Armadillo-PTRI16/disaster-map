@@ -9,9 +9,14 @@ const Title = () => {
     <div>
       <h1>
         <center>
-          {title}
+          Disaster Map
         </center>
       </h1>
+      <h4>
+        <center>
+          {title}
+        </center>
+      </h4>
     </div>
   )
 }
