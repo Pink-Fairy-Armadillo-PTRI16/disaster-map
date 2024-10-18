@@ -198,7 +198,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                 <h4>{poi.date}</h4>
                 <p>{poi.type}</p>
                 <a href={poi.link}>{poi.link}</a>
-                <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} />
+                <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} width={"30%"} />
               </InfoWindow>
             )}
           </>
