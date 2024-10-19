@@ -58,8 +58,9 @@ const Filters = () => {
     <button id="temp-btn" onClick={handleFilterChange} style={{backgroundColor: getFilters['Temperature Extremes'] ? 'blue' : 'lightblue'}}>Temperature Extremes: {locations.filter((el) => el.type == 'temperature extremes').length}</button>
 
     <div className="limit-container">
+      Maximum number of disasters shown:
       <input type="text" placeholder="limit" value={getLimit} onChange={(e) =>  setLimit(e.target.value)}/>
-      <button id='limit-btn'onClick={setLimitStore}><b>Limit Map</b></button>
+      <button id='limit-btn'onClick={setLimitStore}><b>Update limit</b></button>
     </div>
   </div>
   );

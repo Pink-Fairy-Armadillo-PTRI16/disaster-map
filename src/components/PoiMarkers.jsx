@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { AdvancedMarker, Pin, InfoWindow } from "@vis.gl/react-google-maps";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
 import * as actions from "../actions/actions";
 
 // const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
@@ -11,7 +10,10 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
   const selectedMarker = useSelector((store) => store.maps.selectedMarker);
   const limit = useSelector((store) => store.maps.limit);
   const filters = useSelector((store) => store.maps.filters);
+  
   const dispatch = useDispatch();
+  const [weatherIcons, setWeatherIcons] = useState(null);
+
 
   const fetchInfo = async () => {
     try {
@@ -19,7 +21,9 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
         `http://localhost:3000/api/mongo?limit=${limit}&filters=${filters}`
       );
       const data = await response.json();
-      //console.log(data);
+      console.log('data from fetchInfo: ', data);
+      console.log('created at: ', data[0].nasaEvent.createdAt)
+      dispatch(actions.setUpdateActionCreator(data[0].nasaEvent.createdAt))
       return data;
     } catch (error) {
       console.error("Error:", error);
@@ -52,23 +56,29 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
       const rawData = await fetchInfo();
       apiCalls++;
       console.log("rawData useEffect:", rawData);
-      const newLocations = rawData.map((el, i) => {
-        return {
-          key: el.nasaEvent._id,
-          title: el.nasaEvent.title,
-          date: el.nasaEvent.geometries[0].date.substring(0, 10),
-          type: el.nasaEvent.categories[0].title.toLowerCase(),
-          link: el.nasaEvent.sources[0].url,
-          location: {
-            lat: el.nasaEvent.geometries[0].coordinates[1],
-            lng: el.nasaEvent.geometries[0].coordinates[0],
-          },
-          weather: el.relevantWeather ? {
-            location: el.relevantWeather.location || null,
-            forecast: el.relevantWeather.forecast || null,
-          } : null,
-        };
-      });
+      let newLocations;
+      if(rawData == undefined){
+        // dispatch(actions.setLocationsActionCreator([]));
+        newLocations = [];
+      }else{
+        newLocations = rawData.map((el) => {
+          return {
+            key: el.nasaEvent._id,
+            title: el.nasaEvent.title,
+            date: el.nasaEvent.geometries[0].date.substring(0, 10),
+            type: el.nasaEvent.categories[0].title.toLowerCase(),
+            link: el.nasaEvent.sources[0].url,
+            location: {
+              lat: el.nasaEvent.geometries[0].coordinates[1],
+              lng: el.nasaEvent.geometries[0].coordinates[0],
+            },
+            weather: el.relevantWeather ? {
+              location: el.relevantWeather.location || null,
+              forecast: el.relevantWeather.forecast || null,
+            } : null,
+          };
+        });
+      };
       //QUAKE DATA
       let quakeData;
       filters.includes("Earthquakes")
@@ -102,6 +112,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
     // const locations = [];
   }, [limit, filters]);
 
+  
   return (
     <div>
       {locations.map((poi) => {
@@ -139,8 +150,10 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
             newClass= "volcano-window";
             break;
           case "sea and lake ice":
-            image =
-              "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWIweTZpeWd6MnV3d3JheTJoeHRpb3FrMm9pbXgzZ2psbGt6cnpmZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/10N782ExqDjCLK/giphy.gif";
+            image =[
+              "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWIweTZpeWd6MnV3d3JheTJoeHRpb3FrMm9pbXgzZ2psbGt6cnpmZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/10N782ExqDjCLK/giphy.gif",
+              "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmNxdm10ZmNteHJ2OGFva3NoeXNwMTZzYWdmcjNnMnk1eHV0aTg3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BvBEozfsXWWHe/200.gif",
+            ];
             color = "purple";
             newClass = "ice-window";
             break;
@@ -196,7 +209,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
               />
             </AdvancedMarker>
 
-            {poi.key === selectedMarker && (
+            {poi.key === selectedMarker &&  (
               <InfoWindow
                 className={newClass}
                 position={poi.location}
@@ -209,12 +222,38 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                   <h2>{poi.title}</h2>
                   <h4>{poi.date}</h4>
                   <p>Event Type: {poi.type}</p>
+                  {poi.type == 'earthquakes' && 
+                    <p>Magnitude: {poi.title.slice(2, 5)}</p>
+                  }
                   <a href={poi.link} target="_blank" rel="noopener noreferrer">More Info</a>
                   <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} alt={poi.type} />
                   
+                  
                   <div className="weather-info">
                     <h3>Weather Information</h3>
-                    <pre>{safeStringify(poi.weather)}</pre>
+                    {/* {console.log('weatherInfo', poi.weather)} */}
+                    {poi.type != 'earthquakes' && poi.weather != null
+                    ? <div>
+                        <h3>Region: {poi.weather.location.region}</h3>
+                        <div style={{display: 'flex', flexDirection:'row', alignItems:'center', padding:'0px'}}>
+                          <div style={{padding: '0px'}}>
+                            <p><b>{poi.weather.forecast.day.condition.text}</b></p> 
+                          </div>
+                          <div style={{padding: '0px'}}>
+                            <img src={`https:${poi.weather.forecast.day.condition.icon}`} width='30px' ></img> 
+                          </div>
+                        </div>
+                      
+                        
+                        <p>Chance of Rain: {poi.weather.forecast.day.daily_chance_of_rain} %</p>
+                        <p>High Temp: {poi.weather.forecast.day.maxtemp_f} F</p>
+                        <p>Low Temp: {poi.weather.forecast.day.mintemp_f} F</p>
+                        <p>UV Index: {poi.weather.forecast.day.uv}/11+</p>
+                        <p>Humidity: {poi.weather.forecast.day.avghumidity} g/m^3</p>
+                        {/* <pre>{safeStringify(poi.weather)}</pre> */}
+                      </div>
+                    : <p>n/a</p>
+                    }
                   </div>
                 </div>
               </InfoWindow>

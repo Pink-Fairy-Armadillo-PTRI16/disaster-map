@@ -6,6 +6,7 @@ const nasaEvent = new mongoose.Schema({
     title: {type: String, required: true},
     description: {type: String, required: false},
     link: {type: String, required: true},
+    createdAt: { type: Date, required: true, default: Date.now },
     categories: {type: [{
         id: {type: Number, required: true},
         title: {type: String, required: true}
