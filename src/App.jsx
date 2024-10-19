@@ -10,6 +10,7 @@ import Title from "./components/Title.jsx";
 import Links from "./components/Links.jsx";
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // const title = useSelector(store => store.maps.title);
 

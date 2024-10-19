@@ -10,3 +10,16 @@
 |6. What is the technology stack?| govAPIs/sql/mongo/geoAPIs/react/redux/express|
 |Team Responsibility breakdown: Who’s working on which part?|Frontend: Carolina,Jun,Sung <br> Backend: Brendan,Harris|
 
+
+Presentation:
+describe problem we are trying to solve -Brendan
+Tell solution you came up with - Harris/Carolina
+Demo - Carolina/Harris
+    click POI markers to get more info
+    set filters dynamically
+    limiter
+    explain what the other pages are supposed to do (submit, links, get help, login) - Sung
+interesting tech challenges -  Jun, Sung, Brendan
+    working with google maps api
+    incorporate react/redux with google maps
+    incorporate database with above, challenges on the backend -Brendan
