@@ -222,6 +222,9 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                   <h2>{poi.title}</h2>
                   <h4>{poi.date}</h4>
                   <p>Event Type: {poi.type}</p>
+                  {poi.type == 'earthquakes' && 
+                    <p>Magnitute: {poi.title.slice(2, 5)}</p>
+                  }
                   <a href={poi.link} target="_blank" rel="noopener noreferrer">More Info</a>
                   <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} alt={poi.type} />
                   
