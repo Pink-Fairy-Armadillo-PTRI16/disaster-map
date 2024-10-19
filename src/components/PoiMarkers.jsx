@@ -12,7 +12,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
   const filters = useSelector((store) => store.maps.filters);
   
   const dispatch = useDispatch();
-  const [weatherIcon, setWeatherIcon] = useState(null);
+  const [weatherIcons, setWeatherIcons] = useState(null);
 
 
   const fetchInfo = async () => {
@@ -50,35 +50,35 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
     }
   };
 
-  const renderWeatherIcon = async (cdnLink) => {
-    const response = await fetch(`https:${cdnLink}`);
-    const blob = await response.blob();
-    return setWeatherIcon(URL.createObjectURL(blob));
-  }
-
   useEffect(() => {
     async function mapStuff() {
       let apiCalls = 0;
       const rawData = await fetchInfo();
       apiCalls++;
       console.log("rawData useEffect:", rawData);
-      const newLocations = rawData.map((el, i) => {
-        return {
-          key: el.nasaEvent._id,
-          title: el.nasaEvent.title,
-          date: el.nasaEvent.geometries[0].date.substring(0, 10),
-          type: el.nasaEvent.categories[0].title.toLowerCase(),
-          link: el.nasaEvent.sources[0].url,
-          location: {
-            lat: el.nasaEvent.geometries[0].coordinates[1],
-            lng: el.nasaEvent.geometries[0].coordinates[0],
-          },
-          weather: el.relevantWeather ? {
-            location: el.relevantWeather.location || null,
-            forecast: el.relevantWeather.forecast || null,
-          } : null,
-        };
-      });
+      let newLocations;
+      if(rawData == undefined){
+        // dispatch(actions.setLocationsActionCreator([]));
+        newLocations = [];
+      }else{
+        newLocations = rawData.map((el) => {
+          return {
+            key: el.nasaEvent._id,
+            title: el.nasaEvent.title,
+            date: el.nasaEvent.geometries[0].date.substring(0, 10),
+            type: el.nasaEvent.categories[0].title.toLowerCase(),
+            link: el.nasaEvent.sources[0].url,
+            location: {
+              lat: el.nasaEvent.geometries[0].coordinates[1],
+              lng: el.nasaEvent.geometries[0].coordinates[0],
+            },
+            weather: el.relevantWeather ? {
+              location: el.relevantWeather.location || null,
+              forecast: el.relevantWeather.forecast || null,
+            } : null,
+          };
+        });
+      };
       //QUAKE DATA
       let quakeData;
       filters.includes("Earthquakes")
@@ -223,7 +223,7 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                   <h4>{poi.date}</h4>
                   <p>Event Type: {poi.type}</p>
                   {poi.type == 'earthquakes' && 
-                    <p>Magnitute: {poi.title.slice(2, 5)}</p>
+                    <p>Magnitude: {poi.title.slice(2, 5)}</p>
                   }
                   <a href={poi.link} target="_blank" rel="noopener noreferrer">More Info</a>
                   <img src={Array.isArray(image) ? image[Math.ceil(Math.random() * image.length - 1)] : image} alt={poi.type} />
@@ -235,12 +235,17 @@ const PoiMarkers = (props /*:{pois: Poi[]}*/) => {
                     {poi.type != 'earthquakes' && poi.weather != null
                     ? <div>
                         <h3>Region: {poi.weather.location.region}</h3>
-                        {/* <div style={{ justifyContent : 'center' }}> */}
-                          {/* <p>Overall: {poi.weather.forecast.day.condition.text}</p> */}
-                          {/* <p>{renderWeatherIcon(poi.weather.forecast.day.condition.icon)}</p> */}
-                        {/* </div> */}
+                        <div style={{display: 'flex', flexDirection:'row', alignItems:'center', padding:'0px'}}>
+                          <div style={{padding: '0px'}}>
+                            <p><b>{poi.weather.forecast.day.condition.text}</b></p> 
+                          </div>
+                          <div style={{padding: '0px'}}>
+                            <img src={`https:${poi.weather.forecast.day.condition.icon}`} width='30px' ></img> 
+                          </div>
+                        </div>
+                      
                         
-                        <p>Chance of Rain:{poi.weather.forecast.day.daily_chance_of_rain} %</p>
+                        <p>Chance of Rain: {poi.weather.forecast.day.daily_chance_of_rain} %</p>
                         <p>High Temp: {poi.weather.forecast.day.maxtemp_f} F</p>
                         <p>Low Temp: {poi.weather.forecast.day.mintemp_f} F</p>
                         <p>UV Index: {poi.weather.forecast.day.uv}/11+</p>
