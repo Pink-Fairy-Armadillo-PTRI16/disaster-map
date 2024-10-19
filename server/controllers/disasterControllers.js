@@ -62,7 +62,7 @@ disasterControl.getQuake = async (req, res, next)=>{
     
     res.locals.events = res.locals.events || [];
 
-    const response = await fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2024-10-14&endtime=2024-10-15');
+    const response = await fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2024-10-14&endtime=2024-10-18');
     const data = await response.json();
 
     for (const event of data.features) {

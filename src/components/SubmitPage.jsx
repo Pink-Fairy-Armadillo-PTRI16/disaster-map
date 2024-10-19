@@ -8,7 +8,6 @@ const SubmitPage = ()=> {
     return (
         <div className='submit-container'>
             <h1 className='submitHeader'>Submit Disaster Info</h1><br/>
-
             <form id='submit'>
                 <label for='firstname'>First Name: </label><br/>
                 <input type='text' id='firstname' name='firstname' value={firstName} onChange={(e)=>setFirstName(e.target.value)}/><br/>
