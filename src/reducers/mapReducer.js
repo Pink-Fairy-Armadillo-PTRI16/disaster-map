@@ -5,11 +5,13 @@ const pageTitles = [
   // "Disaster Map",
   "a.k.a. Fire Map",
   "We didn't start the fire",
-  'It was always burning, since the world\'s been turning',
+  "It was always burning, since the world's been turning",
   "Hurricane Helene was (not) geoengineered by the government to seize and access lithium deposits in Chimney Rock",
   "Global warming is reaalll",
   "Disaster Master",
   "This is fine",
+  "I don't want to set the world on fire",
+  "I just want to start a flame in your heart",
   <img sizes='(max-width:10px), 10px, 10px' src="https://media.tenor.com/vxFNoJHV3I4AAAAM/chiquichico.gif"></img>,
 ];
 
